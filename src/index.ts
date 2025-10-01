@@ -4,6 +4,7 @@ export { GenericForm } from './components/GenericForm';
 // Field components
 export { TextField } from './fields/TextField';
 export { SelectField } from './fields/SelectField';
+export { CheckboxField } from './fields/CheckboxField';
 export { SubmitButton } from './fields/SubmitButton';
 
 // Types

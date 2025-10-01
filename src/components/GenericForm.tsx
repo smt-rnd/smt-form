@@ -1,5 +1,6 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { GenericFormProps, GenericFormRef } from '../types';
 import { Form } from './ui/form';
 
@@ -40,6 +41,7 @@ export const GenericForm = forwardRef<
   GenericFormRef<any>,
   GenericFormProps<any>
 >(({
+  schema,
   initialValues,
   onSubmit,
   children,
@@ -47,8 +49,7 @@ export const GenericForm = forwardRef<
 }, ref) => {
   const form = useForm({
     defaultValues: initialValues,
-    // Note: Add resolver back when Zod integration is fixed
-    // resolver: zodResolver(schema),
+    resolver: schema ? zodResolver(schema as any) : undefined,
   });
 
   useImperativeHandle(ref, () => ({

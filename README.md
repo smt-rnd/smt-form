@@ -5,6 +5,10 @@
 
 A comprehensive, type-safe form library for React with Zod validation and Tailwind CSS styling. Built for modern React applications with excellent developer experience.
 
+## ⚠️ Important: Peer Dependencies Required
+
+**Before installing or using smt-form, you MUST install the required peer dependencies.** Failure to install them will result in runtime errors when importing or using the library. These dependencies are not automatically installed to avoid version conflicts with your existing setup.
+
 ## ✨ Features
 
 - ✅ **Type-Safe**: Full TypeScript support with inferred types from Zod schemas
@@ -19,28 +23,42 @@ A comprehensive, type-safe form library for React with Zod validation and Tailwi
 
 ## 🚀 Installation
 
+First, install the required peer dependencies (see below). Then install smt-form:
+
 ```bash
+npm install react react-dom react-hook-form @hookform/resolvers zod tailwindcss @radix-ui/react-select lucide-react class-variance-authority clsx tailwind-merge
 npm install smt-form
 ```
 
 ### Peer Dependencies
 
-Install the required peer dependencies:
+smt-form requires these peer dependencies to function properly. They are marked as peers to allow you to control versions and avoid duplicates in your bundle:
 
-```bash
-npm install react react-dom react-hook-form @hookform/resolvers zod tailwindcss @radix-ui/react-select lucide-react class-variance-authority clsx tailwind-merge
-```
+- `react` >= 18.0.0
+- `react-dom` >= 18.0.0
+- `react-hook-form` >= 7.0.0
+- `@hookform/resolvers` >= 3.0.0
+- `zod` >= 3.0.0
+- `tailwindcss` >= 3.0.0
+- `@radix-ui/react-select` >= 2.0.0
+- `lucide-react` >= 0.0.0
+- `class-variance-authority` >= 0.0.0
+- `clsx` >= 0.0.0
+- `tailwind-merge` >= 0.0.0
+
+**Install them before using smt-form to avoid import errors.**
 
 ## 📖 Quick Start
 
 ```tsx
-import { GenericForm, TextField, SelectField, SubmitButton, z } from 'smt-form';
+import { GenericForm, TextField, SelectField, CheckboxField, SubmitButton, z } from 'smt-form';
 
 // Define your schema
 const userSchema = z.object({
   name: z.string().min(2, 'Name is required'),
   email: z.string().email('Invalid email'),
   department: z.enum(['engineering', 'marketing', 'sales']),
+  agreeToTerms: z.boolean().refine(val => val === true, 'You must agree to the terms'),
 });
 
 // Define options for select fields
@@ -58,18 +76,19 @@ function MyForm() {
   return (
     <GenericForm
       schema={userSchema}
-      initialValues={{ name: '', email: '', department: 'engineering' }}
+      initialValues={{ name: '', email: '', department: 'engineering', agreeToTerms: false }}
       onSubmit={handleSubmit}
     >
       <TextField name="name" label="Name" required />
       <TextField name="email" label="Email" type="email" required />
-      <SelectField
-        name="department"
-        label="Department"
-        options={departmentOptions}
-        required
-      />
-      <SubmitButton />
+       <SelectField
+         name="department"
+         label="Department"
+         options={departmentOptions}
+         required
+       />
+       <CheckboxField name="agreeToTerms" label="I agree to the terms" required />
+       <SubmitButton />
     </GenericForm>
   );
 }
@@ -136,6 +155,20 @@ import { SelectField } from 'smt-form';
     { value: 'option2', text: 'Option 2' }
   ]}
   placeholder="Select option"
+  required
+/>
+```
+
+#### CheckboxField
+
+A checkbox field component for boolean values.
+
+```tsx
+import { CheckboxField } from 'smt-form';
+
+<CheckboxField
+  name="agreeToTerms"
+  label="I agree to the terms and conditions"
   required
 />
 ```
