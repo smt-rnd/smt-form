@@ -1,0 +1,83 @@
+{
+  "name": "smt-form",
+  "version": "1.0.0",
+  "description": "A comprehensive, type-safe form library for React with Zod validation and Tailwind CSS styling",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./styles": "./dist/styles.css"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "forms",
+    "typescript",
+    "zod",
+    "validation",
+    "tailwindcss",
+    "shadcn",
+    "nextjs"
+  ],
+  "author": "SMT Form Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smtlabs/smt-form.git"
+  },
+  "bugs": {
+    "url": "https://github.com/smtlabs/smt-form/issues"
+  },
+  "homepage": "https://github.com/smtlabs/smt-form#readme",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "react-hook-form": ">=7.0.0",
+    "@hookform/resolvers": ">=3.0.0",
+    "zod": ">=3.0.0",
+    "tailwindcss": ">=3.0.0",
+    "@radix-ui/react-select": ">=2.0.0",
+    "lucide-react": ">=0.0.0",
+    "class-variance-authority": ">=0.0.0",
+    "clsx": ">=0.0.0",
+    "tailwind-merge": ">=0.0.0"
+  },
+  "devDependencies": {
+    "@types/react": ">=18.0.0",
+    "@types/react-dom": ">=18.0.0",
+    "typescript": ">=5.0.0",
+    "tsup": ">=8.0.0",
+    "eslint": ">=8.0.0",
+    "@typescript-eslint/eslint-plugin": ">=6.0.0",
+    "@typescript-eslint/parser": ">=6.0.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "react-hook-form": ">=7.0.0",
+    "@hookform/resolvers": ">=3.0.0",
+    "zod": ">=3.0.0",
+    "tailwindcss": ">=3.0.0",
+    "@radix-ui/react-select": ">=2.0.0",
+    "lucide-react": ">=0.0.0",
+    "class-variance-authority": ">=0.0.0",
+    "clsx": ">=0.0.0",
+    "tailwind-merge": ">=0.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
