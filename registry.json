@@ -1,0 +1,59 @@
+{
+  "name": "smt-form",
+  "homepage": "https://github.com/smt-rnd/smt-form",
+  "items": [
+    {
+      "name": "generic-form",
+      "type": "components:ui",
+      "title": "Generic Form",
+      "description": "A comprehensive form component with Zod validation and React Hook Form",
+      "files": [
+        {
+          "path": "components/ui/generic-form.tsx",
+          "content": "import { forwardRef, useImperativeHandle } from 'react';\nimport { useForm } from 'react-hook-form';\nimport { zodResolver } from '@hookform/resolvers/zod';\nimport { GenericFormProps, GenericFormRef } from './types';\nimport { Form } from './form';\n\n/**\n * GenericForm component with flexible typing.\n */\nexport const GenericForm = forwardRef<\n  GenericFormRef<any>,\n  GenericFormProps<any>\n>(({\n  schema,\n  initialValues,\n  onSubmit,\n  children,\n  className,\n}, ref) => {\n  const form = useForm({\n    defaultValues: initialValues,\n    resolver: schema ? zodResolver(schema as any) : undefined,\n  });\n\n  useImperativeHandle(ref, () => ({\n    getValues: form.getValues,\n    reset: (values) => form.reset(values),\n    setValue: (name, value) => form.setValue(name, value),\n    formState: form.formState,\n    control: form.control,\n    form: form,\n  }));\n\n  return (\n    <Form {...form}>\n      <form\n        onSubmit={form.handleSubmit(onSubmit)}\n        className={className}\n      >\n        {children}\n      </form>\n    </Form>\n  );\n});\n\nGenericForm.displayName = 'GenericForm';\n\nexport { GenericForm };"
+        },
+        {
+          "path": "components/ui/text-field.tsx",
+          "content": "import { Button } from './button';\nimport {\n  FormControl,\n  FormField,\n  FormItem,\n  FormLabel,\n  FormMessage,\n} from './form';\nimport { Input } from './input';\nimport { BaseFieldProps } from './types';\nimport { X } from 'lucide-react';\nimport { ReactNode } from 'react';\nimport { useFormContext, FieldValues } from 'react-hook-form';\n\ntype TextFieldProps = BaseFieldProps<FieldValues> & {\n  type?: 'text' | 'email' | 'number' | 'password' | 'tel' | 'url';\n  action?: () => void;\n  icon?: ReactNode;\n  loading?: boolean;\n  inputClass?: string;\n};\n\n/**\n * A text input field component for forms.\n */\nexport const TextField = ({\n  name,\n  label,\n  type = 'text',\n  placeholder = 'Enter value',\n  required = false,\n  action,\n  icon = <X size={16} className=\"text-muted-foreground\" />,\n  loading,\n  disabled = false,\n  className,\n  inputClass,\n}: TextFieldProps) => {\n  const { control } = useFormContext();\n\n  return (\n    <FormField\n      control={control}\n      name={name}\n      render={({ field }) => (\n        <FormItem className={className}>\n          {label && (\n            <FormLabel htmlFor={name}>\n              <span>{label}</span>\n              {required && <span className=\"ml-1 text-red-500\">*</span>}\n            </FormLabel>\n          )}\n          <FormControl>\n            <div className=\"relative flex items-center gap-2\">\n              <Input\n                {...field}\n                type={type}\n                placeholder={placeholder}\n                className={`w-full ${inputClass} ${action ? 'pr-12' : ''}`}\n                id={name}\n                disabled={disabled}\n              />\n\n              {loading && (\n                <div className=\"absolute right-4 animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-gray-600\" />\n              )}\n\n              {action && (\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={action}\n                  type=\"button\"\n                  className=\"absolute right-0.5 top-0.5\"\n                  disabled={disabled}\n                >\n                  {icon}\n                </Button>\n              )}\n            </div>\n          </FormControl>\n\n          <FormMessage className=\"line-clamp-1 text-xs\" />\n        </FormItem>\n      )}\n    />\n  );\n};\n\nTextField.displayName = 'TextField';\n\nexport { TextField };"
+        },
+        {
+          "path": "components/ui/select-field.tsx",
+          "content": "import {\n  FormControl,\n  FormField,\n  FormItem,\n  FormLabel,\n  FormMessage,\n} from './form';\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from './select';\nimport { BaseFieldProps, SelectOption } from './types';\nimport { useFormContext, FieldValues } from 'react-hook-form';\n\ntype SelectFieldProps = BaseFieldProps<FieldValues> & {\n  options: SelectOption[];\n  placeholder?: string;\n};\n\n/**\n * A select dropdown field component for forms.\n */\nexport const SelectField = ({\n  name,\n  label,\n  options,\n  placeholder = 'Select an option',\n  required = false,\n  disabled = false,\n  className,\n}: SelectFieldProps) => {\n  const { control } = useFormContext();\n\n  return (\n    <FormField\n      control={control}\n      name={name}\n      render={({ field }) => (\n        <FormItem className={className}>\n          {label && (\n            <FormLabel>\n              <span>{label}</span>\n              {required && <span className=\"ml-1 text-red-500\">*</span>}\n            </FormLabel>\n          )}\n          <Select\n            onValueChange={field.onChange}\n            value={field.value}\n            disabled={disabled}\n          >\n            <FormControl>\n              <SelectTrigger>\n                <SelectValue placeholder={placeholder} />\n              </SelectTrigger>\n            </FormControl>\n            <SelectContent>\n              {options.map((option) => (\n                <SelectItem\n                  key={option.value}\n                  value={option.value}\n                  disabled={option.disabled}\n                >\n                  {option.text}\n                </SelectItem>\n              ))}\n            </SelectContent>\n          </Select>\n          <FormMessage />\n        </FormItem>\n      )}\n    />\n  );\n};\n\nSelectField.displayName = 'SelectField';\n\nexport { SelectField };"
+        },
+        {
+          "path": "components/ui/checkbox-field.tsx",
+          "content": "import { useFormContext } from 'react-hook-form';\nimport { BaseFieldProps } from './types';\nimport { FormField, FormItem, FormLabel, FormControl, FormMessage } from './form';\nimport { Checkbox } from './checkbox';\nimport { cn } from './utils';\n\n/**\n * CheckboxField component for boolean input fields.\n */\nexport const CheckboxField = ({\n  name,\n  label,\n  required,\n  disabled,\n  className,\n}: BaseFieldProps<any>) => {\n  const { control } = useFormContext();\n\n  return (\n    <FormField\n      control={control}\n      name={name}\n      render={({ field }) => (\n        <FormItem className={cn(\"flex flex-row items-start space-x-3 space-y-0\", className)}>\n          <FormControl>\n            <Checkbox\n              checked={field.value}\n              onCheckedChange={field.onChange}\n              disabled={disabled}\n              required={required}\n            />\n          </FormControl>\n          <div className=\"space-y-1 leading-none\">\n            {label && (\n              <FormLabel className=\"text-sm font-normal\">\n                {label}\n                {required && <span className=\"text-destructive ml-1\">*</span>}\n              </FormLabel>\n            )}\n            <FormMessage />\n          </div>\n        </FormItem>\n      )}\n    />\n  );\n};\n\nexport { CheckboxField };"
+        },
+        {
+          "path": "components/ui/submit-button.tsx",
+          "content": "import { Button } from './button';\nimport { cn } from './utils';\n\ntype SubmitButtonProps = {\n  label?: string;\n  loadingLabel?: string;\n  isLoading?: boolean;\n  disabled?: boolean;\n  width?: 'full' | 'auto';\n  className?: string;\n};\n\n/**\n * A submit button component for forms.\n */\nexport const SubmitButton = ({\n  label = 'Submit',\n  loadingLabel = 'Submitting...',\n  isLoading = false,\n  disabled = false,\n  width = 'full',\n  className,\n}: SubmitButtonProps) => {\n  return (\n    <Button\n      type=\"submit\"\n      className={cn(\n        'transition-all duration-200',\n        width === 'full' ? 'w-full' : 'w-auto',\n        className\n      )}\n      disabled={isLoading || disabled}\n    >\n      {isLoading ? (\n        <div className=\"flex items-center gap-2\">\n          <div className=\"w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin\" />\n          {loadingLabel}\n        </div>\n      ) : (\n        label\n      )}\n    </Button>\n  );\n};\n\nSubmitButton.displayName = 'SubmitButton';\n\nexport { SubmitButton };"
+        },
+        {
+          "path": "components/ui/types.ts",
+          "content": "import React from 'react';\nimport { Control, FieldValues, FormState, UseFormReturn, Path } from 'react-hook-form';\nimport { z } from 'zod';\n\n// Base field props\nexport interface BaseFieldProps<T extends FieldValues> {\n  name: Path<T>;\n  label?: string;\n  placeholder?: string;\n  required?: boolean;\n  disabled?: boolean;\n  className?: string;\n}\n\n// Generic form ref interface\nexport interface GenericFormRef<T extends FieldValues> {\n  getValues: () => T;\n  reset: (values?: Partial<T>) => void;\n  setValue: (name: Path<T>, value: unknown) => void;\n  formState: FormState<T>;\n  control: Control<T>;\n  form: UseFormReturn<T>;\n}\n\n// Generic form props\nexport interface GenericFormProps<T extends FieldValues> {\n  schema?: z.ZodSchema<T>;\n  initialValues: Partial<T>;\n  onSubmit: (data: T) => void | Promise<void>;\n  children: React.ReactNode;\n  ref?: React.Ref<GenericFormRef<T>>;\n  className?: string;\n}\n\n// Select field options\nexport interface SelectOption {\n  value: string;\n  text: string;\n  disabled?: boolean;\n}\n\nexport type { FieldValues, Control, FormState, UseFormReturn, Path };"
+        },
+        {
+          "path": "components/ui/utils.ts",
+          "content": "import { type ClassValue, clsx } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}"
+        }
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "lucide-react",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [
+        "form",
+        "input",
+        "button",
+        "select",
+        "checkbox",
+        "label"
+      ]
+    }
+  ]
+}
